@@ -19,6 +19,10 @@
 		6F9246011890C8CA001EC459 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6F9245E91890C8CA001EC459 /* UIKit.framework */; };
 		6F9246091890C8CA001EC459 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6F9246071890C8CA001EC459 /* InfoPlist.strings */; };
 		6F92460B1890C8CA001EC459 /* WXSwipeTableViewCellTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F92460A1890C8CA001EC459 /* WXSwipeTableViewCellTests.m */; };
+		6F9246171890C8FE001EC459 /* WXSwipeCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F9246161890C8FE001EC459 /* WXSwipeCell.m */; };
+		6F9246191890CC2C001EC459 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F9246181890CC2C001EC459 /* Storyboard.storyboard */; };
+		6F92461D1890CC61001EC459 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F92461C1890CC61001EC459 /* TableViewCell.m */; };
+		6F9246201890CC70001EC459 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F92461F1890CC70001EC459 /* TableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +52,13 @@
 		6F9246061890C8CA001EC459 /* WXSwipeTableViewCellTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WXSwipeTableViewCellTests-Info.plist"; sourceTree = "<group>"; };
 		6F9246081890C8CA001EC459 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6F92460A1890C8CA001EC459 /* WXSwipeTableViewCellTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WXSwipeTableViewCellTests.m; sourceTree = "<group>"; };
+		6F9246151890C8FE001EC459 /* WXSwipeCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WXSwipeCell.h; path = WXSwipeCell/WXSwipeCell.h; sourceTree = "<group>"; };
+		6F9246161890C8FE001EC459 /* WXSwipeCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WXSwipeCell.m; path = WXSwipeCell/WXSwipeCell.m; sourceTree = "<group>"; };
+		6F9246181890CC2C001EC459 /* Storyboard.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = Storyboard.storyboard; path = Example/Storyboard.storyboard; sourceTree = "<group>"; };
+		6F92461B1890CC61001EC459 /* TableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableViewCell.h; path = Example/TableViewCell.h; sourceTree = "<group>"; };
+		6F92461C1890CC61001EC459 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableViewCell.m; path = Example/TableViewCell.m; sourceTree = "<group>"; };
+		6F92461E1890CC70001EC459 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableViewController.h; path = Example/TableViewController.h; sourceTree = "<group>"; };
+		6F92461F1890CC70001EC459 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableViewController.m; path = Example/TableViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,6 +118,8 @@
 		6F9245EB1890C8CA001EC459 /* WXSwipeTableViewCell */ = {
 			isa = PBXGroup;
 			children = (
+				6F9246141890C8D2001EC459 /* WXSwipeCell */,
+				6F92461A1890CC30001EC459 /* Example */,
 				6F9245F41890C8CA001EC459 /* AppDelegate.h */,
 				6F9245F51890C8CA001EC459 /* AppDelegate.m */,
 				6F9245F71890C8CA001EC459 /* Images.xcassets */,
@@ -142,6 +155,27 @@
 				6F9246071890C8CA001EC459 /* InfoPlist.strings */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		6F9246141890C8D2001EC459 /* WXSwipeCell */ = {
+			isa = PBXGroup;
+			children = (
+				6F9246151890C8FE001EC459 /* WXSwipeCell.h */,
+				6F9246161890C8FE001EC459 /* WXSwipeCell.m */,
+			);
+			name = WXSwipeCell;
+			sourceTree = "<group>";
+		};
+		6F92461A1890CC30001EC459 /* Example */ = {
+			isa = PBXGroup;
+			children = (
+				6F9246181890CC2C001EC459 /* Storyboard.storyboard */,
+				6F92461B1890CC61001EC459 /* TableViewCell.h */,
+				6F92461C1890CC61001EC459 /* TableViewCell.m */,
+				6F92461E1890CC70001EC459 /* TableViewController.h */,
+				6F92461F1890CC70001EC459 /* TableViewController.m */,
+			);
+			name = Example;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -221,6 +255,7 @@
 			files = (
 				6F9245F01890C8CA001EC459 /* InfoPlist.strings in Resources */,
 				6F9245F81890C8CA001EC459 /* Images.xcassets in Resources */,
+				6F9246191890CC2C001EC459 /* Storyboard.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,7 +275,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F9245F61890C8CA001EC459 /* AppDelegate.m in Sources */,
+				6F92461D1890CC61001EC459 /* TableViewCell.m in Sources */,
 				6F9245F21890C8CA001EC459 /* main.m in Sources */,
+				6F9246201890CC70001EC459 /* TableViewController.m in Sources */,
+				6F9246171890C8FE001EC459 /* WXSwipeCell.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
