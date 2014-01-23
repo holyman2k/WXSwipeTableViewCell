@@ -8,22 +8,33 @@
 
 #import <UIKit/UIKit.h>
 
-
 typedef enum _WXDirection {
     DirectionNone = 0,
     DirectionLeft = 1,
     DirectionRight = 2,
 } WXDirection;
 
+typedef enum _WXScrollState {
+    WXScrollStateShort = 0,
+    WXScrollStateLong = 1,
+    WXScrollStateNone = 2,
+} WXScrollState;
+
 @protocol WXSwipeCellDelegate <NSObject>
 
-- (void)tableViewCell:(UITableViewCell *)cell didScrollPassOffset:(BOOL)passedOffset withDirection:(WXDirection)direction;
+- (void)tableViewCell:(UITableViewCell *)cell didScrollPassOffset:(BOOL)passedOffset withDirection:(WXDirection)direction andScrollState:(WXScrollState)scrollState;
 
-- (void)tableViewCell:(UITableViewCell *)cell didEndDragPassOffset:(WXDirection)direction;
+- (void)tableViewCell:(UITableViewCell *)cell didEndDragPassOffset:(WXDirection)direction andScrollState:(WXScrollState)scrollState;
 
-- (CGFloat)scrollLeftOffset;
+@optional
 
-- (CGFloat)scrollRightOffset;
+- (CGFloat)scrollLeftShortOffset;
+
+- (CGFloat)scrollRightShortOffset;
+
+- (CGFloat)scrollLeftLongOffset;
+
+- (CGFloat)scrollRightLongOffset;
 
 @end
 

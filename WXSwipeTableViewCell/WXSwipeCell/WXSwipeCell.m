@@ -40,6 +40,7 @@
     self.scrollView.directionalLockEnabled = YES;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
+    self.scrollView.delaysContentTouches = NO;
     [self.contentView addSubview:self.scrollView];
 }
 
@@ -47,25 +48,29 @@
 {
     if (![self scrollView:scrollView enabledForOffset:scrollView.contentOffset]) return;
     WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
-
-
     CGFloat contentXOffset = self.contentView.frame.origin.x;
     if (!scrollView.decelerating) {
         // dragging
         [self scrollContentViewWithScrollView:scrollView];
-        if (direction == DirectionRight && contentXOffset> self.scrollDelegate.scrollRightOffset) {
-            // dragging towards right
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction];
-        } else if (direction == DirectionLeft && contentXOffset < -self.scrollDelegate.scrollLeftOffset ) {
-            // dragging towards left
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction];
+        if (direction == DirectionRight && contentXOffset > self._scrollRightShortOffset && contentXOffset < self._scrollRightLongOffset) {
+            // dragging towards right short
+            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateShort];
+        } else if (direction == DirectionRight && contentXOffset > self._scrollRightLongOffset ) {
+            // dragging towards right long
+            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateLong];
+        } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset  && contentXOffset > -self._scrollLeftLongOffset) {
+            // dragging towards left short
+            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateShort];
+        } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset ) {
+            // dragging towards left long
+            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateLong];
         } else {
             // dragging back between left and right offset
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:NO withDirection:direction];
+            [self.scrollDelegate tableViewCell:self didScrollPassOffset:NO withDirection:direction andScrollState:WXScrollStateNone];
         }
     } else {
         // drag ended
-        if (contentXOffset < self.scrollDelegate.scrollRightOffset && contentXOffset > -self.scrollDelegate.scrollLeftOffset) {
+        if (contentXOffset < self._scrollRightShortOffset && contentXOffset > -self._scrollLeftShortOffset) {
             // content view between left and right offset, scroll content view back with scroll view deccleration
             [self scrollContentViewWithScrollView:scrollView];
         }
@@ -85,12 +90,19 @@
     WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
 
     CGFloat contentXOffset = self.contentView.frame.origin.x;
-    if (contentXOffset > self.scrollDelegate.scrollRightOffset && direction == DirectionRight) {
-        // drag toward right ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction];
-    } else if (contentXOffset < -self.scrollDelegate.scrollLeftOffset && direction == DirectionLeft) {
-        // drag toward left ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction];
+
+    if (direction == DirectionRight && contentXOffset > self._scrollRightShortOffset && contentXOffset < self._scrollRightLongOffset) {
+        // drag toward short right ended pass offset
+        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateShort];
+    } else if (direction == DirectionRight && contentXOffset > self._scrollRightLongOffset) {
+        // drag toward long right ended pass offset
+        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateLong];
+    } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset && contentXOffset > -self._scrollLeftLongOffset) {
+        // drag toward short left ended pass offset
+        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateShort];
+    } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftLongOffset) {
+        // drag toward long left ended pass offset
+        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateLong];
     }
 }
 
@@ -108,11 +120,46 @@
 - (BOOL)scrollView:(UIScrollView *)scrollView enabledForOffset:(CGPoint)offset
 {
     if (!self.scrollDelegate) return NO;
+    if (self._scrollLeftShortOffset == CGFLOAT_MAX && self._scrollRightShortOffset == CGFLOAT_MAX) return NO;
     WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
     if (self.disableLeftSwipe && direction == DirectionLeft) return NO;
     if (self.disableRightSwipe && direction == DirectionRight) return NO;
 
     return YES;
 }
+
+- (CGFloat)_scrollLeftShortOffset
+{
+    if ([self.scrollDelegate respondsToSelector:@selector(scrollLeftShortOffset)]){
+        return self.scrollDelegate.scrollLeftShortOffset;
+    }
+    return CGFLOAT_MAX;
+}
+
+- (CGFloat)_scrollRightShortOffset
+{
+    if ([self.scrollDelegate respondsToSelector:@selector(scrollRightShortOffset)]){
+        return self.scrollDelegate.scrollRightShortOffset;
+    }
+    return CGFLOAT_MAX;
+
+}
+
+- (CGFloat)_scrollLeftLongOffset
+{
+    if ([self.scrollDelegate respondsToSelector:@selector(scrollLeftLongOffset)]){
+        return self.scrollDelegate.scrollLeftLongOffset > self._scrollLeftShortOffset ? self.scrollDelegate.scrollLeftLongOffset : CGFLOAT_MAX;
+    }
+    return CGFLOAT_MAX;
+}
+
+- (CGFloat)_scrollRightLongOffset
+{
+    if ([self.scrollDelegate respondsToSelector:@selector(scrollRightLongOffset)]){
+        return self.scrollDelegate.scrollRightLongOffset > self._scrollRightShortOffset ? self.scrollDelegate.scrollRightLongOffset : CGFLOAT_MAX;
+    }
+    return CGFLOAT_MAX;
+}
+
 
 @end

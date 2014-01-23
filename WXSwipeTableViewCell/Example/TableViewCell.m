@@ -23,21 +23,21 @@
 }
 
 
-- (void)tableViewCell:(UITableViewCell *)cell didScrollPassOffset:(BOOL)passedOffset withDirection:(WXDirection)direction;
+- (void)tableViewCell:(UITableViewCell *)cell didScrollPassOffset:(BOOL)passedOffset withDirection:(WXDirection)direction andScrollState:(WXScrollState)scrollState
 {
     switch (direction) {
         case DirectionLeft:
-            self.backgroundColor = passedOffset ? [UIColor colorWithRed:0.205 green:0.689 blue:1.000 alpha:1.000] : [UIColor clearColor];
+            self.backgroundColor = passedOffset ? scrollState ? [UIColor colorWithRed:0.008 green:0.518 blue:0.51 alpha:1] : [UIColor colorWithRed:0.205 green:0.689 blue:1.000 alpha:1.000] : [UIColor clearColor];
             break;
         case DirectionRight:
-            self.backgroundColor = passedOffset ? [UIColor colorWithRed:1.000 green:0.282 blue:0.289 alpha:1.000] : [UIColor clearColor];
+            self.backgroundColor = passedOffset ? scrollState ? [UIColor colorWithRed:1.000 green:0.939 blue:0.325 alpha:1.000] : [UIColor colorWithRed:1.000 green:0.282 blue:0.289 alpha:1.000] : [UIColor clearColor];
             break;
         default:
             break;
     }
 }
 
-- (void)tableViewCell:(UITableViewCell *)cell didEndDragPassOffset:(WXDirection)direction
+- (void)tableViewCell:(UITableViewCell *)cell didEndDragPassOffset:(WXDirection)direction andScrollState:(WXScrollState)scrollState
 {
     if (direction == DirectionRight) {
         CGPoint point = CGPointMake(self.contentView.frame.size.width, 0);
@@ -54,14 +54,24 @@
     }
 }
 
-- (CGFloat)scrollLeftOffset
+//- (CGFloat)scrollLeftShortOffset
+//{
+//    return 80;
+//}
+
+//- (CGFloat)scrollRightShortOffset
+//{
+//    return 80;
+//}
+
+- (CGFloat)scrollLeftLongOffset
 {
-    return 80;
+    return 160;
 }
 
-- (CGFloat)scrollRightOffset
+- (CGFloat)scrollRightLongOffset
 {
-    return 80;
+    return 160;
 }
 
 @end
