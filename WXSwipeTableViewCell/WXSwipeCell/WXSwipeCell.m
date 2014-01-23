@@ -75,7 +75,7 @@
 - (void)scrollContentViewWithScrollView:(UIScrollView *)scrollView
 {
     CGRect frame = self.contentView.frame;
-    frame.origin.x = -scrollView.contentOffset.x;
+    frame.origin.x = -scrollView.contentOffset.x * 2;
     self.contentView.frame = frame;
 }
 

@@ -19,7 +19,7 @@
     [super awakeFromNib];
     self.scrollDelegate = self;
     self.contentView.backgroundColor = [UIColor whiteColor];
-    self.disableLeftSwipe = YES;
+//    self.disableLeftSwipe = YES;
 }
 
 
@@ -43,11 +43,13 @@
         CGPoint point = CGPointMake(self.contentView.frame.size.width, 0);
         [self animateCellToPoint:point onComplete:^{
             [self.delegate removeCell:self];
+            self.backgroundColor = [UIColor clearColor];
         }];
     } else if (direction == DirectionLeft) {
         CGPoint point = CGPointMake(-self.contentView.frame.size.width, 0);
         [self animateCellToPoint:point onComplete:^{
             [self.delegate removeCell:self];
+            self.backgroundColor = [UIColor clearColor];
         }];
     }
 }
