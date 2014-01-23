@@ -75,7 +75,7 @@
 - (void)scrollContentViewWithScrollView:(UIScrollView *)scrollView
 {
     CGRect frame = self.contentView.frame;
-    frame.origin.x = -scrollView.contentOffset.x * 2;
+    frame.origin.x = -scrollView.contentOffset.x * 2.5;
     self.contentView.frame = frame;
 }
 
@@ -84,10 +84,11 @@
     if (![self scrollView:scrollView enabledForOffset:scrollView.contentOffset]) return;
     WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
 
-    if (scrollView.contentOffset.x <= -self.scrollDelegate.scrollRightOffset && direction == DirectionRight) {
+    CGFloat contentXOffset = self.contentView.frame.origin.x;
+    if (contentXOffset > self.scrollDelegate.scrollRightOffset && direction == DirectionRight) {
         // drag toward right ended pass offset
         [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction];
-    } else if (scrollView.contentOffset.x > self.scrollDelegate.scrollLeftOffset && direction == DirectionLeft) {
+    } else if (contentXOffset < -self.scrollDelegate.scrollLeftOffset && direction == DirectionLeft) {
         // drag toward left ended pass offset
         [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction];
     }

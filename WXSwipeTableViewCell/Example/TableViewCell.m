@@ -56,12 +56,12 @@
 
 - (CGFloat)scrollLeftOffset
 {
-    return 50;
+    return 80;
 }
 
 - (CGFloat)scrollRightOffset
 {
-    return 50;
+    return 80;
 }
 
 @end
