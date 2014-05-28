@@ -13,23 +13,9 @@
 
 @implementation WXSwipeCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void)layoutSubviews
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
-
-- (void)awakeFromNib
-{
-    [self setup];
-    [super awakeFromNib];
-}
-
-- (void)setup
-{
+    [super layoutSubviews];
     self.scrollView = [[UIScrollView alloc] initWithFrame:self.contentView.frame];
     self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     self.scrollView.backgroundColor = [UIColor clearColor];
@@ -40,8 +26,28 @@
     self.scrollView.directionalLockEnabled = YES;
     self.scrollView.showsVerticalScrollIndicator = NO;
     self.scrollView.showsHorizontalScrollIndicator = NO;
-    self.scrollView.delaysContentTouches = NO;
+    self.scrollView.delaysContentTouches = YES;
+
+    UITapGestureRecognizer *gesture = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(tapHandler:)];
+    gesture.numberOfTapsRequired = 1;
+    gesture.numberOfTouchesRequired = 1;
+    [self.contentView addGestureRecognizer:gesture];
     [self.contentView addSubview:self.scrollView];
+}
+
+- (void)tapHandler:(UITapGestureRecognizer *)gesture
+{
+    if (gesture.state == UIGestureRecognizerStateEnded) {
+        [self setSelected:YES animated:YES];
+
+        id tableView = self;;
+
+        while (tableView && ![tableView isKindOfClass:[UITableView class]]) {
+            tableView = [tableView superview];
+        }
+        NSIndexPath *indexPath = [tableView indexPathForCell:self];
+        [[tableView delegate] tableView:tableView didSelectRowAtIndexPath:indexPath];
+    }
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView
