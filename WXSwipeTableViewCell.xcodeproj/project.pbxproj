@@ -23,6 +23,7 @@
 		6F9246191890CC2C001EC459 /* Storyboard.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6F9246181890CC2C001EC459 /* Storyboard.storyboard */; };
 		6F92461D1890CC61001EC459 /* TableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F92461C1890CC61001EC459 /* TableViewCell.m */; };
 		6F9246201890CC70001EC459 /* TableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F92461F1890CC70001EC459 /* TableViewController.m */; };
+		6FE3D75419946A18008E05D5 /* WXReorderTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FE3D75319946A18008E05D5 /* WXReorderTableView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +60,8 @@
 		6F92461C1890CC61001EC459 /* TableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableViewCell.m; path = Example/TableViewCell.m; sourceTree = "<group>"; };
 		6F92461E1890CC70001EC459 /* TableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TableViewController.h; path = Example/TableViewController.h; sourceTree = "<group>"; };
 		6F92461F1890CC70001EC459 /* TableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TableViewController.m; path = Example/TableViewController.m; sourceTree = "<group>"; };
+		6FE3D75219946A18008E05D5 /* WXReorderTableView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXReorderTableView.h; sourceTree = "<group>"; };
+		6FE3D75319946A18008E05D5 /* WXReorderTableView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WXReorderTableView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -169,6 +172,8 @@
 		6F92461A1890CC30001EC459 /* Example */ = {
 			isa = PBXGroup;
 			children = (
+				6FE3D75219946A18008E05D5 /* WXReorderTableView.h */,
+				6FE3D75319946A18008E05D5 /* WXReorderTableView.m */,
 				6F9246181890CC2C001EC459 /* Storyboard.storyboard */,
 				6F92461B1890CC61001EC459 /* TableViewCell.h */,
 				6F92461C1890CC61001EC459 /* TableViewCell.m */,
@@ -274,6 +279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6FE3D75419946A18008E05D5 /* WXReorderTableView.m in Sources */,
 				6F9245F61890C8CA001EC459 /* AppDelegate.m in Sources */,
 				6F92461D1890CC61001EC459 /* TableViewCell.m in Sources */,
 				6F9245F21890C8CA001EC459 /* main.m in Sources */,

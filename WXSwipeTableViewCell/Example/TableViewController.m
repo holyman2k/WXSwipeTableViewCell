@@ -8,10 +8,11 @@
 
 #import "TableViewController.h"
 #import "TableViewCell.h"
+#import "WXReorderTableView.h"
 
-@interface TableViewController () <WXSwipeCellDelegate>
-@property (strong, nonatomic) NSMutableArray *task;
-@property (weak, nonatomic) IBOutlet UILabel *stateLabel;
+@interface TableViewController () <WXSwipeCellDelegate, WXReorderTableViewDelegate>
+@property (nonatomic, strong) NSMutableArray *task;
+@property (nonatomic, weak) IBOutlet UILabel *stateLabel;
 @end
 
 @implementation TableViewController
@@ -44,15 +45,27 @@
     return self.task.count;
 }
 
-- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+- (UITableViewCell *)tableView:(WXReorderTableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     static NSString *CellIdentifier = @"Cell";
     TableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+
+    if (tableView.indexPathOfReorderingCell != nil && indexPath.row == tableView.indexPathOfReorderingCell.row) {
+        cell.textLabel.text = nil;
+        return cell;
+    }
 
     cell.label.text = self.task[indexPath.row];
     cell.delegate = self;
 
     return cell;
+}
+
+- (void)swapObjectAtIndexPath:(NSIndexPath *)fromIndexPath toIndexPath:(NSIndexPath *)toIndexPath
+{
+    NSMutableArray *list = [self.task mutableCopy];
+    [list exchangeObjectAtIndex:fromIndexPath.row withObjectAtIndex:toIndexPath.row];
+    self.task = list;
 }
 
 - (void)tableViewCell:(UITableViewCell *)cell didChangeSwiepState:(WXSwipeState)state withDrection:(WXSwipeDirection)direction
