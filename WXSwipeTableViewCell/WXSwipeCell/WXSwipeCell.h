@@ -8,44 +8,48 @@
 
 #import <UIKit/UIKit.h>
 
-typedef enum _WXDirection {
-    DirectionNone = 0,
-    DirectionLeft = 1,
-    DirectionRight = 2,
-} WXDirection;
+typedef enum _WXSwipeDirection {
+    WXSwipeDirectionNone = 0,
+    WXSwipeDirectionLeft = 1,
+    WXSwipeDirectionRight = 2,
+} WXSwipeDirection;
 
-typedef enum _WXScrollState {
-    WXScrollStateShort = 0,
-    WXScrollStateLong = 1,
-    WXScrollStateNone = 2,
-} WXScrollState;
+typedef enum _WXSwipeState {
+    WXSwipeStateShort = 0,
+    WXSwipeStateLong = 1,
+    WXSwipeStateNone = 2,
+} WXSwipeState;
+
+@class WXSwipeCell;
 
 @protocol WXSwipeCellDelegate <NSObject>
 
-- (void)tableViewCell:(UITableViewCell *)cell didScrollPassOffset:(BOOL)passedOffset withDirection:(WXDirection)direction andScrollState:(WXScrollState)scrollState;
+- (void)tableViewCell:(UITableViewCell *)cell didChangeSwiepState:(WXSwipeState)state withDrection:(WXSwipeDirection)direction;
 
-- (void)tableViewCell:(UITableViewCell *)cell didEndDragPassOffset:(WXDirection)direction andScrollState:(WXScrollState)scrollState;
-
-@optional
-
-- (CGFloat)scrollLeftShortOffset;
-
-- (CGFloat)scrollRightShortOffset;
-
-- (CGFloat)scrollLeftLongOffset;
-
-- (CGFloat)scrollRightLongOffset;
-
+- (void)tableViewCell:(UITableViewCell *)cell didEndSwipeAtState:(WXSwipeState)state withDirection:(WXSwipeDirection)direction;
 @end
 
 @interface WXSwipeCell : UITableViewCell
 
 @property (nonatomic) BOOL disableLeftSwipe;
-
 @property (nonatomic) BOOL disableRightSwipe;
 
-@property (weak, nonatomic) id<WXSwipeCellDelegate> scrollDelegate;
+@property (nonatomic) CGFloat shortSwipeOffset;
+@property (nonatomic) CGFloat longSwipeOffset;
 
-- (void)animateCellToPoint:(CGPoint)point onComplete:(void(^)(void))completion;
+@property (nonatomic, strong) UIImage *iconLeftShort;
+@property (nonatomic, strong) UIImage *iconLeftLong;
+@property (nonatomic, strong) UIImage *iconRightShort;
+@property (nonatomic, strong) UIImage *iconRightLong;
+
+
+@property (nonatomic, readonly) UIImageView *imageViewLeft;
+@property (nonatomic, readonly) UIImageView *imageViewRight;
+
+@property (weak, nonatomic) id<WXSwipeCellDelegate> delegate;
+
+- (void)animateSwipeWithDirection:(WXSwipeDirection)direction onComplete:(void(^)(void))completion;
+
+- (void)moveContentViewToOffset:(CGFloat)offset animated:(BOOL)aniamted completion:(void(^)(void))completion;
 
 @end

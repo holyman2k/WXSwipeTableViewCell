@@ -9,15 +9,8 @@
 #import <UIKit/UIKit.h>
 #import "WXSwipeCell.h"
 
-@protocol TableViewCellDelegate <NSObject>
-
-- (void)removeCell:(UITableViewCell *)cell;
-
-@end
-
 @interface TableViewCell : WXSwipeCell
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
-@property (weak, nonatomic) id<TableViewCellDelegate> delegate;
 
 @end

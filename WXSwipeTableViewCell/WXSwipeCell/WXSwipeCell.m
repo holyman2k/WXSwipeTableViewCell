@@ -7,159 +7,167 @@
 //
 
 #import "WXSwipeCell.h"
-@interface WXSwipeCell() <UIScrollViewDelegate>
-@property (strong, nonatomic) UIScrollView *scrollView;
+@interface WXSwipeCell() <UIGestureRecognizerDelegate>
+@property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
+@property (nonatomic, strong) UIImageView *imageViewLeft;
+@property (nonatomic, strong) UIImageView *imageViewRight;
 @end
 
 @implementation WXSwipeCell
 
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
+- (void)layoutSubviews
 {
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        [self setup];
-    }
-    return self;
-}
+    if (!self.panGesture) {
+        self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureHandler:)];
+        self.panGesture.delegate = self;
+        [self.contentView addGestureRecognizer:self.panGesture];
 
-- (void)awakeFromNib
-{
-    [self setup];
-    [super awakeFromNib];
-}
+        CGFloat iconSize = 20.0f;
+        CGFloat iconPadding = 18.0f;
 
-- (void)setup
-{
-    self.scrollView = [[UIScrollView alloc] initWithFrame:self.contentView.frame];
-    self.scrollView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-    self.scrollView.backgroundColor = [UIColor clearColor];
-    self.scrollView.delegate = self;
-    self.scrollView.bounces = YES;
-    self.scrollView.alwaysBounceHorizontal = YES;
-    self.scrollView.alwaysBounceVertical = NO;
-    self.scrollView.directionalLockEnabled = YES;
-    self.scrollView.showsVerticalScrollIndicator = NO;
-    self.scrollView.showsHorizontalScrollIndicator = NO;
-    self.scrollView.delaysContentTouches = NO;
-    [self.contentView addSubview:self.scrollView];
-}
+        CGFloat posY = (self.frame.size.height - iconSize) / 2;
+        CGRect rectLeft = CGRectMake(-iconSize - iconPadding, posY, iconSize, iconSize);
+        self.imageViewLeft = [[UIImageView alloc] initWithFrame:rectLeft];
+        self.imageViewLeft.backgroundColor = [UIColor clearColor];
 
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView
-{
-    if (![self scrollView:scrollView enabledForOffset:scrollView.contentOffset]) return;
-    WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
-    CGFloat contentXOffset = self.contentView.frame.origin.x;
-    if (!scrollView.decelerating) {
-        // dragging
-        [self scrollContentViewWithScrollView:scrollView];
-        if (direction == DirectionRight && contentXOffset > self._scrollRightShortOffset && contentXOffset < self._scrollRightLongOffset) {
-            // dragging towards right short
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateShort];
-        } else if (direction == DirectionRight && contentXOffset > self._scrollRightLongOffset ) {
-            // dragging towards right long
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateLong];
-        } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset  && contentXOffset > -self._scrollLeftLongOffset) {
-            // dragging towards left short
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateShort];
-        } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset ) {
-            // dragging towards left long
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:YES withDirection:direction andScrollState:WXScrollStateLong];
-        } else {
-            // dragging back between left and right offset
-            [self.scrollDelegate tableViewCell:self didScrollPassOffset:NO withDirection:direction andScrollState:WXScrollStateNone];
-        }
-    } else {
-        // drag ended
-        if (contentXOffset < self._scrollRightShortOffset && contentXOffset > -self._scrollLeftShortOffset) {
-            // content view between left and right offset, scroll content view back with scroll view deccleration
-            [self scrollContentViewWithScrollView:scrollView];
-        }
+        CGRect rectRight = CGRectMake(self.frame.size.width + iconPadding, posY, iconSize, iconSize);
+        self.imageViewRight = [[UIImageView alloc] initWithFrame:rectRight];
+        self.imageViewRight.backgroundColor = [UIColor clearColor];
+
+        [self.contentView addSubview:self.imageViewLeft];
+        [self.contentView addSubview:self.imageViewRight];
+
+        self.shortSwipeOffset = self.frame.size.width * .25;
+        self.longSwipeOffset = self.frame.size.width * .6;
     }
 }
 
-- (void)scrollContentViewWithScrollView:(UIScrollView *)scrollView
+- (void)prepareForReuse
 {
-    CGRect frame = self.contentView.frame;
-    frame.origin.x = -scrollView.contentOffset.x * 2.5;
-    self.contentView.frame = frame;
+    [super prepareForReuse];
+    [self moveContentViewToOffset:0 animated:false completion:nil];
+    self.contentView.backgroundColor = [UIColor whiteColor];
 }
 
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate
+- (void)animateSwipeWithDirection:(WXSwipeDirection)direction onComplete:(void(^)(void))completion
 {
-    if (![self scrollView:scrollView enabledForOffset:scrollView.contentOffset]) return;
-    WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
-
-    CGFloat contentXOffset = self.contentView.frame.origin.x;
-
-    if (direction == DirectionRight && contentXOffset > self._scrollRightShortOffset && contentXOffset < self._scrollRightLongOffset) {
-        // drag toward short right ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateShort];
-    } else if (direction == DirectionRight && contentXOffset > self._scrollRightLongOffset) {
-        // drag toward long right ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateLong];
-    } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftShortOffset && contentXOffset > -self._scrollLeftLongOffset) {
-        // drag toward short left ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateShort];
-    } else if (direction == DirectionLeft && contentXOffset < -self._scrollLeftLongOffset) {
-        // drag toward long left ended pass offset
-        [self.scrollDelegate tableViewCell:self didEndDragPassOffset:direction andScrollState:WXScrollStateLong];
+    switch (direction) {
+        case WXSwipeDirectionNone:
+            [self moveContentViewToOffset:0 animated:YES completion:completion];
+            break;
+        case WXSwipeDirectionLeft:
+            [self moveContentViewToOffset:-self.contentView.frame.size.width animated:YES completion:completion];
+            break;
+        case WXSwipeDirectionRight:
+            [self moveContentViewToOffset:self.contentView.frame.size.width animated:YES completion:completion];
+            break;
+        default:
+            break;
     }
 }
 
-- (void)animateCellToPoint:(CGPoint)point onComplete:(void(^)(void))completion
+- (void)moveContentViewToOffset:(CGFloat)offset animated:(BOOL)aniamted completion:(void(^)(void))completion
 {
-    [UIView animateWithDuration:.7 delay:0 usingSpringWithDamping:1 initialSpringVelocity:1.5 options:UIViewAnimationOptionCurveEaseIn animations:^{
+    void(^block)() = ^void() {
         CGRect frame = self.contentView.frame;
-        frame.origin = point;
+        frame.origin.x = offset;
         self.contentView.frame = frame;
-    } completion:^(BOOL finished) {
-        completion();
-    }];
-}
+    };
 
-- (BOOL)scrollView:(UIScrollView *)scrollView enabledForOffset:(CGPoint)offset
-{
-    if (!self.scrollDelegate) return NO;
-    if (self._scrollLeftShortOffset == CGFLOAT_MAX && self._scrollRightShortOffset == CGFLOAT_MAX) return NO;
-    WXDirection direction = scrollView.contentOffset.x < 0 ? DirectionRight : DirectionLeft;
-    if (self.disableLeftSwipe && direction == DirectionLeft) return NO;
-    if (self.disableRightSwipe && direction == DirectionRight) return NO;
-
-    return YES;
-}
-
-- (CGFloat)_scrollLeftShortOffset
-{
-    if ([self.scrollDelegate respondsToSelector:@selector(scrollLeftShortOffset)]){
-        return self.scrollDelegate.scrollLeftShortOffset;
+    if (aniamted) {
+        [UIView animateWithDuration:.4 delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
+            block();
+        } completion:^(BOOL finished) {
+            if (finished && completion) completion();
+        }];
+    } else {
+        block();
+        if (completion) completion();
     }
-    return CGFLOAT_MAX;
 }
 
-- (CGFloat)_scrollRightShortOffset
+- (void)gestureHandler:(UIPanGestureRecognizer *)gesture
 {
-    if ([self.scrollDelegate respondsToSelector:@selector(scrollRightShortOffset)]){
-        return self.scrollDelegate.scrollRightShortOffset;
-    }
-    return CGFLOAT_MAX;
+    CGPoint point = [gesture translationInView:self.contentView];
 
+    if (point.x > 0 && self.disableRightSwipe) return;
+    if (point.x < 0 && self.disableLeftSwipe) return;
+
+    switch (gesture.state) {
+        case UIGestureRecognizerStateBegan:
+            break;
+        case UIGestureRecognizerStateChanged:{
+            [self moveContentViewToOffset:point.x animated:YES completion:nil];
+            WXSwipeState state = [self swipeStateFromOffset:point.x];
+            WXSwipeDirection direction = [self swipeDirectionFromOffset:point.x];
+            [self triggerSwipeDelegateWithSwipeState:state andDirection:direction swipeEnded:NO];
+            break;
+        }
+        case UIGestureRecognizerStateEnded: {
+            WXSwipeState state = [self swipeStateFromOffset:point.x];
+            WXSwipeDirection direction = [self swipeDirectionFromOffset:point.x];
+            [self triggerSwipeDelegateWithSwipeState:state andDirection:direction swipeEnded:YES];
+            break;
+        }
+        default:
+            break;
+    }
 }
 
-- (CGFloat)_scrollLeftLongOffset
+- (void)triggerSwipeDelegateWithSwipeState:(WXSwipeState)state andDirection:(WXSwipeDirection)direction swipeEnded:(BOOL)ended
 {
-    if ([self.scrollDelegate respondsToSelector:@selector(scrollLeftLongOffset)]){
-        return self.scrollDelegate.scrollLeftLongOffset > self._scrollLeftShortOffset ? self.scrollDelegate.scrollLeftLongOffset : CGFLOAT_MAX;
+
+    if (!ended) {
+        UIImageView *imageView = direction == WXSwipeDirectionLeft ? self.imageViewRight : self.imageViewLeft;
+        switch (state) {
+            case WXSwipeStateNone: {
+                self.imageViewLeft.image = nil;
+                self.imageViewRight.image = nil;
+                break;
+            }
+            case WXSwipeStateShort: {
+                imageView.image = direction == WXSwipeDirectionLeft ? self.iconRightShort : self.iconLeftShort;
+                break;
+            }
+            case WXSwipeStateLong: {
+                imageView.image = direction == WXSwipeDirectionLeft ? self.iconRightLong : self.iconLeftLong;
+                break;
+            }
+            default:
+                break;
+        }
     }
-    return CGFLOAT_MAX;
+
+    if (self.delegate) {
+        if (ended) {
+            [self.delegate tableViewCell:self didEndSwipeAtState:state withDirection:direction];
+        } else {
+            [self.delegate tableViewCell:self didChangeSwiepState:state withDrection:direction];
+        }
+    }
+
+    if (ended && state == WXSwipeStateNone) {
+        [self moveContentViewToOffset:0 animated:YES completion:nil];
+    }
 }
 
-- (CGFloat)_scrollRightLongOffset
+- (WXSwipeDirection)swipeDirectionFromOffset:(CGFloat)offset
 {
-    if ([self.scrollDelegate respondsToSelector:@selector(scrollRightLongOffset)]){
-        return self.scrollDelegate.scrollRightLongOffset > self._scrollRightShortOffset ? self.scrollDelegate.scrollRightLongOffset : CGFLOAT_MAX;
-    }
-    return CGFLOAT_MAX;
+    if (offset < 0) return WXSwipeDirectionLeft;
+    if (offset > 0) return WXSwipeDirectionRight;
+    return WXSwipeDirectionNone;
 }
+
+- (WXSwipeState)swipeStateFromOffset:(CGFloat)offset
+{
+    CGFloat aOffset = fabs(offset);
+    if (aOffset > self.longSwipeOffset) return WXSwipeStateLong;
+    if (aOffset > self.shortSwipeOffset) return WXSwipeStateShort;
+
+    return WXSwipeStateNone;
+}
+
+
 
 
 @end

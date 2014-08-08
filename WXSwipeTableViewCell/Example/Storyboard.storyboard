@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Xw9-my-IJh">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5056" systemVersion="13E28" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" initialViewController="Xw9-my-IJh">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--Table View Controller - Todo-->
@@ -12,9 +12,29 @@
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <view key="tableHeaderView" contentMode="scaleToFill" id="JVU-Sy-BP2">
+                            <rect key="frame" x="0.0" y="64" width="320" height="55"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="state:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="R8G-yS-qY2">
+                                    <rect key="frame" x="20" y="19" width="280" height="17"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                    <color key="textColor" red="0.29655611520000003" green="0.29655611520000003" blue="0.29655611520000003" alpha="1" colorSpace="calibratedRGB"/>
+                                    <nil key="highlightedColor"/>
+                                </label>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstAttribute="centerY" secondItem="R8G-yS-qY2" secondAttribute="centerY" id="BZT-7e-xF7"/>
+                                <constraint firstItem="R8G-yS-qY2" firstAttribute="leading" secondItem="JVU-Sy-BP2" secondAttribute="leading" constant="20" id="PxR-Qh-DHq"/>
+                                <constraint firstAttribute="centerX" secondItem="R8G-yS-qY2" secondAttribute="centerX" id="ppL-T1-5VK"/>
+                                <constraint firstAttribute="trailing" secondItem="R8G-yS-qY2" secondAttribute="trailing" constant="20" id="ytN-XH-t0M"/>
+                            </constraints>
+                        </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="Cell" id="urP-M7-ewx" customClass="TableViewCell">
-                                <rect key="frame" x="0.0" y="86" width="320" height="70"/>
+                                <rect key="frame" x="0.0" y="141" width="320" height="70"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="urP-M7-ewx" id="p3u-pc-2Lw">
                                     <rect key="frame" x="0.0" y="0.0" width="320" height="69"/>
@@ -42,6 +62,9 @@
                         </prototypes>
                     </tableView>
                     <navigationItem key="navigationItem" title="Todo" id="eW2-gA-Sey"/>
+                    <connections>
+                        <outlet property="stateLabel" destination="R8G-yS-qY2" id="cYT-yu-rVi"/>
+                    </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="shU-y4-Wwn" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

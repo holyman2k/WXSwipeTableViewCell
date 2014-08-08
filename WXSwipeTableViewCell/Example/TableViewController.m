@@ -9,12 +9,12 @@
 #import "TableViewController.h"
 #import "TableViewCell.h"
 
-@interface TableViewController () <TableViewCellDelegate>
+@interface TableViewController () <WXSwipeCellDelegate>
 @property (strong, nonatomic) NSMutableArray *task;
+@property (weak, nonatomic) IBOutlet UILabel *stateLabel;
 @end
 
 @implementation TableViewController
-
 
 - (NSMutableArray *)task
 {
@@ -55,11 +55,43 @@
     return cell;
 }
 
-- (void)removeCell:(UITableViewCell *)cell
+- (void)tableViewCell:(UITableViewCell *)cell didChangeSwiepState:(WXSwipeState)state withDrection:(WXSwipeDirection)direction
 {
-    NSIndexPath *indexPath = [self.tableView indexPathForCell:cell];
-    [self.task removeObjectAtIndex:indexPath.row];
-    [self.tableView reloadData];
+    switch (state) {
+        case WXSwipeStateNone:
+            cell.backgroundColor = [UIColor whiteColor];
+            break;
+        case WXSwipeStateShort:
+            cell.backgroundColor = direction == WXSwipeDirectionLeft ? [UIColor colorWithRed:0.443 green:0.457 blue:1.000 alpha:1.000] : [UIColor colorWithRed:1.000 green:0.431 blue:0.453 alpha:1.000];
+            break;
+        case WXSwipeStateLong:
+            cell.backgroundColor =  direction == WXSwipeDirectionLeft ? [UIColor blueColor] : [UIColor redColor];
+            break;
+        default:
+            break;
+    }
+}
+
+- (void)tableViewCell:(WXSwipeCell *)cell didEndSwipeAtState:(WXSwipeState)state withDirection:(WXSwipeDirection)direction
+{
+    switch (state) {
+        case WXSwipeStateNone:
+            self.stateLabel.text = @"swipe ended no none state";
+            break;
+        case WXSwipeStateShort:
+            self.stateLabel.text = @"swipe ended on short swipe";
+            break;
+        case WXSwipeStateLong:
+            self.stateLabel.text = @"swipe ended on short long";
+            break;
+        default:
+            break;
+    }
+
+    [cell animateSwipeWithDirection:direction onComplete:^{
+        [cell moveContentViewToOffset:0 animated:YES completion:nil];
+    }];
+
 }
 
 @end
