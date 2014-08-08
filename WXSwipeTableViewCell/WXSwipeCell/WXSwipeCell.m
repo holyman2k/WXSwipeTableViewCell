@@ -7,6 +7,7 @@
 //
 
 #import "WXSwipeCell.h"
+
 @interface WXSwipeCell() <UIGestureRecognizerDelegate>
 @property (nonatomic, strong) UIPanGestureRecognizer *panGesture;
 @property (nonatomic, strong) UIImageView *imageViewLeft;
@@ -17,21 +18,23 @@
 
 - (void)layoutSubviews
 {
+    [super layoutSubviews];
+
+    static CGFloat iconSize = 20.0f;
+    static CGFloat iconPadding = 18.0f;
+
+    CGFloat posY = (self.frame.size.height - iconSize) / 2;
+
     if (!self.panGesture) {
         self.panGesture = [[UIPanGestureRecognizer alloc] initWithTarget:self action:@selector(gestureHandler:)];
         self.panGesture.delegate = self;
         [self.contentView addGestureRecognizer:self.panGesture];
 
-        CGFloat iconSize = 20.0f;
-        CGFloat iconPadding = 18.0f;
 
-        CGFloat posY = (self.frame.size.height - iconSize) / 2;
-        CGRect rectLeft = CGRectMake(-iconSize - iconPadding, posY, iconSize, iconSize);
-        self.imageViewLeft = [[UIImageView alloc] initWithFrame:rectLeft];
+        self.imageViewLeft = [[UIImageView alloc] init];
         self.imageViewLeft.backgroundColor = [UIColor clearColor];
 
-        CGRect rectRight = CGRectMake(self.frame.size.width + iconPadding, posY, iconSize, iconSize);
-        self.imageViewRight = [[UIImageView alloc] initWithFrame:rectRight];
+        self.imageViewRight = [[UIImageView alloc] init];
         self.imageViewRight.backgroundColor = [UIColor clearColor];
 
         [self.contentView addSubview:self.imageViewLeft];
@@ -40,6 +43,9 @@
         self.shortSwipeOffset = self.frame.size.width * .25;
         self.longSwipeOffset = self.frame.size.width * .6;
     }
+
+    self.imageViewLeft.frame = CGRectMake(-iconSize - iconPadding, posY, iconSize, iconSize);
+    self.imageViewRight.frame = CGRectMake(self.frame.size.width + iconPadding, posY, iconSize, iconSize);
 }
 
 - (void)prepareForReuse
@@ -56,10 +62,10 @@
             [self moveContentViewToOffset:0 animated:YES completion:completion];
             break;
         case WXSwipeDirectionLeft:
-            [self moveContentViewToOffset:-self.contentView.frame.size.width animated:YES completion:completion];
+            [self moveContentViewToOffset:-self.contentView.frame.size.width - IconSize - IconPadding animated:YES completion:completion];
             break;
         case WXSwipeDirectionRight:
-            [self moveContentViewToOffset:self.contentView.frame.size.width animated:YES completion:completion];
+            [self moveContentViewToOffset:self.contentView.frame.size.width + IconSize + IconPadding animated:YES completion:completion];
             break;
         default:
             break;
@@ -75,10 +81,14 @@
     };
 
     if (aniamted) {
-        [UIView animateWithDuration:.4 delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        [UIView animateWithDuration:.5 delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
             block();
         } completion:^(BOOL finished) {
-            if (finished && completion) completion();
+            if (finished && completion) {
+                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                    completion();
+                });
+            }
         }];
     } else {
         block();
