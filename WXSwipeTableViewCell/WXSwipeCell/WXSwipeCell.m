@@ -177,7 +177,16 @@
     return WXSwipeStateNone;
 }
 
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+	CGPoint translation = [(UIPanGestureRecognizer*)gestureRecognizer translationInView:self];
+    return fabs(translation.y) < fabs(translation.x);
+}
 
+- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
+{
+	return self.panGesture.state == UIGestureRecognizerStatePossible;
+}
 
 
 @end
