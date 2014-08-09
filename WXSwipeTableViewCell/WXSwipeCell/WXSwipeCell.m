@@ -126,7 +126,6 @@
 
 - (void)triggerSwipeDelegateWithSwipeState:(WXSwipeState)state andDirection:(WXSwipeDirection)direction swipeEnded:(BOOL)ended
 {
-
     if (!ended) {
         UIImageView *imageView = direction == WXSwipeDirectionLeft ? self.imageViewRight : self.imageViewLeft;
         switch (state) {
@@ -179,8 +178,11 @@
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
 {
-	CGPoint translation = [(UIPanGestureRecognizer*)gestureRecognizer translationInView:self];
-    return fabs(translation.y) < fabs(translation.x);
+    if ([gestureRecognizer isKindOfClass:[UIPanGestureRecognizer class]]) {
+        CGPoint translation = [(UIPanGestureRecognizer*)gestureRecognizer translationInView:self];
+        return fabs(translation.y) < fabs(translation.x);
+    }
+    return YES;
 }
 
 - (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer
