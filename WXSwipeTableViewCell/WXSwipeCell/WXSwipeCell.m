@@ -16,12 +16,14 @@
 
 @implementation WXSwipeCell
 
+
+static CGFloat iconSize = 20.0f;
+static CGFloat iconPadding = 18.0f;
+
 - (void)layoutSubviews
 {
     [super layoutSubviews];
 
-    static CGFloat iconSize = 20.0f;
-    static CGFloat iconPadding = 18.0f;
 
     CGFloat posY = (self.frame.size.height - iconSize) / 2;
 
@@ -40,7 +42,7 @@
         [self.contentView addSubview:self.imageViewLeft];
         [self.contentView addSubview:self.imageViewRight];
 
-        self.shortSwipeOffset = self.frame.size.width * .25;
+        self.shortSwipeOffset = fabsf(iconSize + iconPadding * 2);
         self.longSwipeOffset = self.frame.size.width * .6;
     }
 
@@ -62,10 +64,10 @@
             [self moveContentViewToOffset:0 animated:YES completion:completion];
             break;
         case WXSwipeDirectionLeft:
-            [self moveContentViewToOffset:-self.contentView.frame.size.width - IconSize - IconPadding animated:YES completion:completion];
+            [self moveContentViewToOffset:-self.contentView.frame.size.width - iconSize - iconPadding animated:YES completion:completion];
             break;
         case WXSwipeDirectionRight:
-            [self moveContentViewToOffset:self.contentView.frame.size.width + IconSize + IconPadding animated:YES completion:completion];
+            [self moveContentViewToOffset:self.contentView.frame.size.width + iconSize + iconPadding animated:YES completion:completion];
             break;
         default:
             break;
@@ -81,7 +83,9 @@
     };
 
     if (aniamted) {
-        [UIView animateWithDuration:.5 delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        static CGFloat animationDuraiton = .3;
+
+        [UIView animateWithDuration:animationDuraiton delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
             block();
         } completion:^(BOOL finished) {
             if (finished && completion) {
@@ -130,8 +134,8 @@
         UIImageView *imageView = direction == WXSwipeDirectionLeft ? self.imageViewRight : self.imageViewLeft;
         switch (state) {
             case WXSwipeStateNone: {
-                self.imageViewLeft.image = nil;
-                self.imageViewRight.image = nil;
+                self.imageViewLeft.image = self.iconLeftShort;
+                self.imageViewRight.image = self.iconRightShort;
                 break;
             }
             case WXSwipeStateShort: {
