@@ -53,7 +53,7 @@ static CGFloat iconPadding = 18.0f;
 - (void)prepareForReuse
 {
     [super prepareForReuse];
-    [self moveContentViewToOffset:0 animated:false completion:nil];
+    [self moveContentViewToOffset:0 animated:NO completion:nil];
     self.contentView.backgroundColor = [UIColor whiteColor];
 }
 
@@ -83,9 +83,11 @@ static CGFloat iconPadding = 18.0f;
     };
 
     if (aniamted) {
-        static CGFloat animationDuraiton = .3;
 
-        [UIView animateWithDuration:animationDuraiton delay:.2 options:UIViewAnimationOptionCurveEaseIn animations:^{
+        // normalise animation speed base on content view position before animating
+        CGFloat animationDuration = [self animationDurationWithOffset:offset];
+
+        [UIView animateWithDuration:animationDuration delay:.2 options:UIViewAnimationOptionCurveLinear animations:^{
             block();
         } completion:^(BOOL finished) {
             if (finished && completion) {
@@ -111,7 +113,7 @@ static CGFloat iconPadding = 18.0f;
         case UIGestureRecognizerStateBegan:
             break;
         case UIGestureRecognizerStateChanged:{
-            [self moveContentViewToOffset:point.x animated:YES completion:nil];
+            [self moveContentViewToOffset:point.x animated:NO completion:nil];
             WXSwipeState state = [self swipeStateFromOffset:point.x];
             WXSwipeDirection direction = [self swipeDirectionFromOffset:point.x];
             [self triggerSwipeDelegateWithSwipeState:state andDirection:direction swipeEnded:NO];
@@ -178,6 +180,25 @@ static CGFloat iconPadding = 18.0f;
     if (aOffset > self.shortSwipeOffset) return WXSwipeStateShort;
 
     return WXSwipeStateNone;
+}
+
+- (CGFloat)animationDurationWithOffset:(CGFloat)offset
+{
+    static CGFloat fullAnimationDuraiton = .4;
+    static CGFloat minAnimationDuraiton = .15;
+    CGFloat animationDuraiton;
+
+    CGFloat frameWidth = self.contentView.frame.size.width;
+    CGFloat posX = self.contentView.frame.origin.x;
+    WXSwipeState swipeState = [self swipeStateFromOffset:offset];
+    if (swipeState == WXSwipeStateNone) {
+        animationDuraiton = fullAnimationDuraiton * fabsf(posX) / frameWidth;
+        animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
+    } else {
+        animationDuraiton = fullAnimationDuraiton * (frameWidth - fabsf(posX)) / frameWidth;
+        animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
+    }
+    return animationDuraiton;
 }
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
