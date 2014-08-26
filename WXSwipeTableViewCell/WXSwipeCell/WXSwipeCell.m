@@ -84,7 +84,6 @@ static CGFloat iconPadding = 18.0f;
 
     if (aniamted) {
 
-        // normalise animation speed base on content view position before animating
         CGFloat animationDuration = [self animationDurationWithOffset:offset];
 
         [UIView animateWithDuration:animationDuration delay:.2 options:UIViewAnimationOptionCurveLinear animations:^{
@@ -185,18 +184,25 @@ static CGFloat iconPadding = 18.0f;
 - (CGFloat)animationDurationWithOffset:(CGFloat)offset
 {
     static CGFloat fullAnimationDuraiton = .4;
-    static CGFloat minAnimationDuraiton = .15;
+    static CGFloat minAnimationDuraiton = .1;
     CGFloat animationDuraiton;
 
     CGFloat frameWidth = self.contentView.frame.size.width;
     CGFloat posX = self.contentView.frame.origin.x;
     WXSwipeState swipeState = [self swipeStateFromOffset:offset];
-    if (swipeState == WXSwipeStateNone) {
-        animationDuraiton = fullAnimationDuraiton * fabsf(posX) / frameWidth;
-        animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
-    } else {
-        animationDuraiton = fullAnimationDuraiton * (frameWidth - fabsf(posX)) / frameWidth;
-        animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
+
+    // normalise animation speed base on content view position before animating
+    switch (swipeState) {
+        case WXSwipeStateNone: {
+            animationDuraiton = fullAnimationDuraiton * fabsf(posX) / frameWidth;
+            animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
+            break;
+        }
+        default: {
+            animationDuraiton = fullAnimationDuraiton * (frameWidth - fabsf(posX)) / frameWidth;
+            animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
+            break;
+        }
     }
     return animationDuraiton;
 }
