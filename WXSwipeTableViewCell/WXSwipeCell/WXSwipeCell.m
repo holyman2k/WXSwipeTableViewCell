@@ -42,7 +42,7 @@ static CGFloat iconPadding = 18.0f;
         [self.contentView addSubview:self.imageViewLeft];
         [self.contentView addSubview:self.imageViewRight];
 
-        self.shortSwipeOffset = fabsf(iconSize + iconPadding * 2);
+        self.shortSwipeOffset = fabs(iconSize + iconPadding * 2);
         self.longSwipeOffset = self.frame.size.width * .6;
     }
 
@@ -194,12 +194,12 @@ static CGFloat iconPadding = 18.0f;
     // normalise animation speed base on content view position before animating
     switch (swipeState) {
         case WXSwipeStateNone: {
-            animationDuraiton = fullAnimationDuraiton * fabsf(posX) / frameWidth;
+            animationDuraiton = fullAnimationDuraiton * fabs(posX) / frameWidth;
             animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
             break;
         }
         default: {
-            animationDuraiton = fullAnimationDuraiton * (frameWidth - fabsf(posX)) / frameWidth;
+            animationDuraiton = fullAnimationDuraiton * (frameWidth - fabs(posX)) / frameWidth;
             animationDuraiton = animationDuraiton < minAnimationDuraiton ? minAnimationDuraiton : animationDuraiton;
             break;
         }
